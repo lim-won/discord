@@ -2,18 +2,19 @@ name: Discord Bot Scheduler
 
 on:
   schedule:
-    - cron: "50 23 * * *"  # 매일 UTC 8:50에 실행 (한국 시간 17:50)
+    # 매일 UTC 23:50 (한국 시각 다음 날 08:50)에 실행
+    - cron: "50 23 * * *"
 
 jobs:
   run-discord-bot:
     runs-on: ubuntu-latest
 
     steps:
-      # 1) 레포지토리 체크아웃 (코드 가져오기)
+      # 1) 레포지토리 체크아웃
       - name: Check out repository
         uses: actions/checkout@v2
 
-      # 2) 파이썬 버전 설정 (예: 3.9)
+      # 2) 파이썬 설정 (예: 3.9)
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
@@ -23,14 +24,14 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      # 4) 봇 실행 (30분 후 자동 종료)
-      - name: Run Discord Bot for 30 minutes
+      # 4) 봇 실행 (20분 후 종료 예시: sleep 1200)
+      - name: Run Discord Bot for 20 minutes
         run: |
           # 백그라운드로 봇 실행
           python bot.py &
-          # 30분(1800초) 대기
+          # 20분(1200초) 대기
           sleep 1200
-          # "python bot.py" 프로세스 강제 종료
+          # "python bot.py" 프로세스를 강제 종료
           pkill -f "python bot.py"
         env:
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
